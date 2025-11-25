@@ -2,10 +2,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { Platform } from "react-native";
 
-const backend = Platform.OS === "android" ? process.env.EXPO_PUBLIC_ANDROID_API_URL : process.env.EXPO_PUBLIC_IOS_API_URL
-console.log(">>check backend:", backend)
+const backend = Platform.OS === "android" 
+  ? process.env.EXPO_PUBLIC_ANDROID_API_URL 
+  : process.env.EXPO_PUBLIC_IOS_API_URL;
+
+// Fallback để không crash nếu env variable không có
+const baseURL = backend || (__DEV__ ? 'http://localhost:3000' : 'https://api.example.com');
+
 const instance = axios.create({
-    baseURL: backend,
+    baseURL: baseURL,
     timeout: 60 * 1000
   });
 

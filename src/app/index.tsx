@@ -19,31 +19,22 @@ const RootPage = () => {
   useEffect(() => {
     async function prepare() {
       try {
-        // Pre-load fonts, make any API calls you need to do here
         const res = await getAccountAPI();
-        console.log(">>check res", res)
         if (res.data) {
-          //success
           setAppState({
             user: res.data,
             accesstoken: await AsyncStorage.getItem("accesstoken")
-
           })
           router.replace("/(tabs)")
-          // await AsyncStorage.removeItem("accesstoken")
         } else {
-          //error
           router.replace("/(auth)/welcome")
         }
       } catch (e) {
-        setState(() => {
-          throw new Error("Không thể kết nối với API backend...")
-
-        })
-        // console.log("Không thể kết nối với API backend...")
-        // console.warn(e);
+        // Không throw error, chỉ redirect về welcome
+        // Nếu API fail (network error, etc), đưa user về login
+        console.warn("Error loading account:", e);
+        router.replace("/(auth)/welcome")
       } finally {
-        // Tell the application to render
         await SplashScreen.hideAsync();
       }
     }
