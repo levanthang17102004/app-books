@@ -94,7 +94,7 @@ const StickyHeader = (props: IProps) => {
                 </Pressable>
                 <Animated.View style={[{ flex: 1 }, animatedStickyHeaderStyle]}>
                     <TextInput
-                        placeholder={"Tìm món ăn tại cửa hàng..."}
+                        placeholder={"Tìm sách tại cửa hàng..."}
                         style={{
                             borderWidth: 1, borderColor: APP_COLOR.GREY, width: "100%",
                             borderRadius: 3,

@@ -12,20 +12,20 @@ import AntDesign from '@expo/vector-icons/AntDesign'; // Đảm bảo import Ant
 const data = [
     {
         key: 1,
-        name: "Top Quán Rating 5* tuần này",
-        description: "Gợi ý quán được tín đồ thực ẩm đánh giá 5*",
+        name: "Top Nhà Sách Rating 5* tuần này",
+        description: "Gợi ý nhà sách được độc giả đánh giá 5*",
         refAPI: "top-rating"
     },
     {
         key: 2,
-        name: "Quán Mới Lên Sàn",
-        description: "Khám phá ngay hàng loạt quán mới",
+        name: "Nhà Sách Mới",
+        description: "Khám phá ngay hàng loạt nhà sách mới",
         refAPI: "newcommer"
     },
     {
         key: 3,
-        name: "Ăn Thỏa Thích, Freeship 0Đ",
-        description: "Bánh ngọt, chân gà, bánh tráng, ...",
+        name: "Mua Sách Thỏa Thích, Freeship 0Đ",
+        description: "Sách văn học, sách kinh doanh, sách kỹ năng, ...",
         refAPI: "top-freeship"
     },
 ];

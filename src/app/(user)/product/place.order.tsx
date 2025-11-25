@@ -65,7 +65,7 @@ const PlaceOrderPage = () => {
     }, [cart, bookstore]);
 
     if (!cart || !bookstore || !bookstore._id || !cart[bookstore._id]?.items) {
-        console.warn("Cart hoặc thông tin nhà hàng không hợp lệ.");
+        console.warn("Cart hoặc thông tin nhà sách không hợp lệ.");
         return;
     }
 
