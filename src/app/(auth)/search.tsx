@@ -18,11 +18,11 @@ const data = [
     { key: 1, name: "Sách Hot", source: require("@/assets/icons/flash-deals.png") },
     { key: 2, name: "Nhà Sách Nổi Bật", source: require("@/assets/icons/nice-shop.png") },
     { key: 3, name: "Tích Điểm", source: require("@/assets/icons/points.png") },
-    { key: 4, name: "Sách Văn Học", source: require("@/assets/icons/rice.png") },
-    { key: 5, name: "Sách Kinh Điển", source: require("@/assets/icons/noodles.png") },
-    { key: 6, name: "Sách Giáo Khoa", source: require("@/assets/icons/bun-pho.png") },
-    { key: 7, name: "Sách Nấu Ăn", source: require("@/assets/icons/bbq.png") },
-    { key: 8, name: "Sách Bỏ Túi", source: require("@/assets/icons/fastfood.png") },
+    { key: 4, name: "Sách Văn Học", source: require("@/assets/icons/sach van hoc.jpg") },
+    { key: 5, name: "Sách Kinh Điển", source: require("@/assets/icons/sach-kinh-dien.jpg") },
+    { key: 6, name: "Sách Giáo Khoa", source: require("@/assets/icons/sach giao khoa.png") },
+    { key: 7, name: "Sách Nấu Ăn", source: require("@/assets/icons/sach nau an.jpg") },
+    { key: 8, name: "Sách Bỏ Túi", source: require("@/assets/icons/sach_bo_tui.png") },
 ];
 
 const SearchPage = () => {
