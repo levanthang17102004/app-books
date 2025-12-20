@@ -18,7 +18,7 @@ export const processDataBookstoreMenu = (bookstore: IBookstore | null) => {
 export const getURLBaseBackend = () => {
     return Platform.OS === "android"
         ? process.env.EXPO_PUBLIC_ANDROID_API_URL
-        : process.env.EXPO_PUBLIC_IOS_API_URL;
+        : process.env.EXPO_PUBLIC_API_URL;
 };
 
 // Debug Async Storage

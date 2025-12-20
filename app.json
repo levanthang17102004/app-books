@@ -16,21 +16,33 @@
       "supportsTablet": true
     },
     "android": {
+      "package": "com.anonymous.appbooks",
       "adaptiveIcon": {
         "foregroundImage": "./src/assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      },
-      "package": "com.anonymous.appbooks"
+      }
     },
-    "web": {
-      "favicon": "./src/assets/favicon.png"
-    },
-    "scheme": "app-books",
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "usesCleartextTraffic": true
+          }
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "3035028c-86b5-4c74-8f5a-5e0c9949271f"
+      }
     }
   }
 }

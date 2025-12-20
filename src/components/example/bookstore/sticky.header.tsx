@@ -6,7 +6,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { useCurrentApp } from "@/context/app.context";
-import { likeBookstoreAPI } from "@/utils/api";
+import { likeBookstoreAPI } from "@/api/user";
 import Toast from "react-native-root-toast";
 const { height: sHeight, width: sWidth } = Dimensions.get('window');
 
@@ -86,7 +86,7 @@ const StickyHeader = (props: IProps) => {
                         }]}
                     >
                         <MaterialIcons
-                            name="arrow-back" 
+                            name="arrow-back"
                             size={24}
                             color="white"
                         />
