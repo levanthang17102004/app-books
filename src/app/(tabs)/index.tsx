@@ -1,47 +1,22 @@
-import React, { useEffect } from "react";
+import { View, SafeAreaView } from "react-native";
+import CustomFlatList from "@/components/CustomFlatList/CustomFlatList";
 import HeaderHome from "@/components/home/header.home";
 import SearchHome from "@/components/home/search.home";
 import TopListHome from "@/components/home/top.list.home";
-import { StyleSheet, View, Text, Pressable } from "react-native";
-import CustomFlatList from "@/components/CustomFlatList/CustomFlatList";
 import CollectionHome from "@/components/home/collection.home";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import AntDesign from '@expo/vector-icons/AntDesign'; // Đảm bảo import AntDesign cho biểu tượng  
-
-const data = [
-    {
-        key: 1,
-        name: "Top Nhà Sách Rating 5* tuần này",
-        description: "Gợi ý nhà sách được độc giả đánh giá 5*",
-        refAPI: "top-rating"
-    },
-    {
-        key: 2,
-        name: "Nhà Sách Mới",
-        description: "Khám phá ngay hàng loạt nhà sách mới",
-        refAPI: "newcommer"
-    },
-    {
-        key: 3,
-        name: "Mua Sách Thỏa Thích, Freeship 0Đ",
-        description: "Sách văn học, sách kinh doanh, sách kỹ năng, ...",
-        refAPI: "top-freeship"
-    },
-];
+import { homeStyles } from "@/styles/home.styles";
+import { useHome } from "@/hooks/useHome";
 
 const HomeTab = () => {
-    useEffect(() => {
-        router.navigate("/(auth)/popup.sale");
-    }, []);
+    const { collections } = useHome();
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <SafeAreaView style={homeStyles.container}>
             <CustomFlatList
-                data={data}
-                style={styles.list}
+                data={collections}
+                style={homeStyles.list}
                 renderItem={({ item }) => (
-                    <View style={styles.collectionContainer}>
+                    <View style={homeStyles.collectionContainer}>
                         <CollectionHome
                             name={item.name}
                             description={item.description}
@@ -56,35 +31,4 @@ const HomeTab = () => {
         </SafeAreaView>
     );
 };
-
 export default HomeTab;
-
-const styles = StyleSheet.create({
-    list: {
-        overflow: "hidden"
-    },
-    collectionContainer: {
-        marginVertical: 5,
-    },
-    headerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between', // Giữa tiêu đề và nút "Xem tất cả"  
-    },
-    icon: {
-        marginRight: 10, // Khoảng cách giữa biểu tượng và tên  
-    },
-    headerText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        flex: 1, // Để tên có thể chiếm không gian còn lại  
-    },
-    seeAllContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    seeAllText: {
-        color: "#5a5a5a",
-        paddingRight: 5,
-    },
-});

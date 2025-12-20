@@ -1,227 +1,105 @@
 import HeaderHome from "@/components/home/header.home";
-import { useCurrentApp } from "@/context/app.context";
-import { currencyFormatter, getURLBaseBackend, placeOrderAPI } from "@/utils/api";
+import { currencyFormatter } from "@/utils/format";
+import { getURLBaseBackend } from "@/utils/helper";
+import { placeOrderAPI } from "@/api/order";
 import { APP_COLOR } from "@/utils/constant";
 import { router } from "expo-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Image, Pressable, ScrollView, Text, View } from "react-native";
 import Toast from "react-native-root-toast";
-
-interface IOrderItem {
-    image: string;
-    title: string;
-    option: string;
-    price: number;
-    quantity: number;
-}
-
-const safeFunction = (callback: Function, fallbackValue: any = null) => {
-    try {
-        return callback();
-    } catch (error) {
-        console.error("Error occurred:", error);
-        return fallbackValue;
-    }
-};
+import { useOrderLogic } from "@/hooks/useOrderLogic"; // Hook logic
+import { useCartAction } from "@/hooks/useCartAction"; // Hook logic
 
 const PlaceOrderPage = () => {
-    const { bookstore, cart, setCart } = useCurrentApp();
-    const [orderItems, setOrderItems] = useState<IOrderItem[]>([]);
+    const { orderItems, cartInfo, bookstore } = useOrderLogic();
+    const { clearCartStore } = useCartAction();
+
     const [paymentMethod, setPaymentMethod] = useState<'cash' | 'paypal'>('cash');
-
-    useEffect(() => {
-        safeFunction(() => {
-            if (cart && bookstore && bookstore._id && cart[bookstore._id]?.items) {
-                const result: IOrderItem[] = [];
-                for (const [menuItemId, currentItems] of Object.entries(cart[bookstore._id].items)) {
-                    if (currentItems.extra) {
-                        for (const [key, value] of Object.entries(currentItems.extra)) {
-                            const option = currentItems.data.options?.find(
-                                item => `${item.title}-${item.description}` === key
-                            );
-                            const addPrice = option?.additionalPrice ?? 0;
-
-                            result.push({
-                                image: currentItems.data.image,
-                                title: currentItems.data.title,
-                                option: key,
-                                price: currentItems.data.basePrice + addPrice,
-                                quantity: value
-                            });
-                        }
-                    } else {
-                        result.push({
-                            image: currentItems.data.image,
-                            title: currentItems.data.title,
-                            option: "",
-                            price: currentItems.data.basePrice,
-                            quantity: currentItems.quantity
-                        });
-                    }
-                }
-                setOrderItems(result);
-            }
-        });
-    }, [cart, bookstore]);
-
-    if (!cart || !bookstore || !bookstore._id || !cart[bookstore._id]?.items) {
-        console.warn("Cart hoặc thông tin nhà sách không hợp lệ.");
-        return;
-    }
-
-
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const handlePlaceOrder = async () => {
+        if (!bookstore || !cartInfo) return;
+        if (isSubmitting) return;
+        setIsSubmitting(true);
+
         try {
             const data = {
-                bookstore: bookstore?._id,
-                totalPrice: cart?.[bookstore!._id].sum,
-                totalQuantity: cart?.[bookstore!._id].quantity,
-                detail: orderItems
+                bookstore: bookstore._id,
+                totalPrice: cartInfo.sum,
+                totalQuantity: cartInfo.quantity,
+                detail: orderItems,
+                type: paymentMethod.toUpperCase() // Đã thêm type
             };
 
             const res = await placeOrderAPI(data);
             if (res.data) {
-                Toast.show("Đặt hàng thành công!", {
-                    duration: Toast.durations.LONG,
-                    textColor: 'white',
-                    backgroundColor: APP_COLOR.ORANGE,
-                    opacity: 1
-                });
-                if (bookstore) {
-                    delete cart[bookstore._id];
-                    setCart((prevCart: any) => ({ ...prevCart, ...cart }));
-                }
+                Toast.show("Đặt hàng thành công!", { backgroundColor: APP_COLOR.ORANGE, textColor: 'white' });
+                clearCartStore(bookstore._id);
                 router.navigate("/");
             } else {
                 const m = Array.isArray(res.message) ? res.message[0] : res.message;
-                Toast.show(m, {
-                    duration: Toast.durations.LONG,
-                    textColor: 'white',
-                    backgroundColor: APP_COLOR.ORANGE,
-                    opacity: 1
-                });
+                Toast.show(m, { backgroundColor: APP_COLOR.ORANGE, textColor: 'white' });
             }
         } catch (error) {
-            console.error("Error placing order:", error);
-            Toast.show("Đã xảy ra lỗi khi đặt hàng. Vui lòng thử lại!", {
-                duration: Toast.durations.LONG,
-                textColor: 'white',
-                backgroundColor: "red",
-                opacity: 1
-            });
+            console.error(error);
+            Toast.show("Lỗi hệ thống!", { backgroundColor: "red", textColor: 'white' });
+        } finally {
+            setIsSubmitting(false);
         }
     };
 
+    if (!cartInfo) return <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Giỏ hàng trống</Text></View>;
+
     return (
-        <View style={{ flex: 1 }}>
-            <View style={{
-                borderBottomColor: "#eee",
-                borderBottomWidth: 1,
-                padding: 10
-            }}>
-                <HeaderHome />
-            </View>
-            <View style={{ padding: 10 }}>
-                <Text style={{ fontWeight: "600" }}>{bookstore?.name}</Text>
-            </View>
+        <View style={{ flex: 1, backgroundColor: 'white' }}>
+            <View style={{ padding: 10, borderBottomWidth: 1, borderColor: '#eee' }}><HeaderHome /></View>
+            <View style={{ padding: 10, backgroundColor: '#f9f9f9' }}><Text style={{ fontWeight: "600" }}>{bookstore?.name}</Text></View>
+
             <ScrollView style={{ flex: 1, padding: 10 }}>
-                {safeFunction(() => orderItems.map((item, index) => (
-                    <View key={index}
-                        style={{
-                            gap: 10,
-                            flexDirection: "row",
-                            borderBottomColor: "#eee",
-                            borderBottomWidth: 1,
-                            paddingVertical: 10
-                        }}>
-                        <Image
-                            style={{ height: 50, width: 50 }}
-                            source={{ uri: `${getURLBaseBackend()}/images/menu-item/${item.image}` }}
-                        />
-                        <View>
-                            <Text style={{ fontWeight: "600" }}>
-                                {item.quantity} x
-                            </Text>
+                {orderItems.map((item, index) => (
+                    <View key={index} style={{ flexDirection: "row", gap: 10, paddingVertical: 10, borderBottomWidth: 1, borderColor: "#eee" }}>
+                        <Image source={{ uri: `${getURLBaseBackend()}/images/menu-item/${item.image}` }} style={{ width: 50, height: 50, borderRadius: 5 }} />
+                        <Text style={{ fontWeight: "bold", color: APP_COLOR.ORANGE, alignSelf: 'center' }}>{item.quantity}x</Text>
+                        <View style={{ flex: 1, justifyContent: 'center' }}>
+                            <Text style={{ fontWeight: '500' }}>{item.title}</Text>
+                            <Text style={{ fontSize: 12, color: 'gray' }}>{item.option}</Text>
                         </View>
-                        <View style={{ gap: 10 }}>
-                            <Text>{item.title}</Text>
-                            <Text style={{ fontSize: 12, color: APP_COLOR.GREY }}>
-                                {item.option}
-                            </Text>
-                        </View>
+                        <Text style={{ alignSelf: 'center' }}>{currencyFormatter(item.price * item.quantity)}</Text>
                     </View>
-                )), [])}
-                {orderItems?.length > 0 && (
-                    <View style={{ marginVertical: 15 }}>
-                        <View style={{
-                            flexDirection: "row",
-                            justifyContent: "space-between"
-                        }}>
-                            <Text style={{ color: APP_COLOR.GREY }}>
-                                Tổng cộng ({bookstore && cart?.[bookstore._id] && cart?.[bookstore._id].quantity} món)
-                            </Text>
-                            <Text>
-                                {currencyFormatter(bookstore && cart?.[bookstore._id] && cart?.[bookstore._id].sum)}
-                            </Text>
-                        </View>
-                    </View>
-                )}
+                ))}
+
+                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginTop: 20 }}>
+                    <Text style={{ color: 'gray' }}>Tổng cộng ({cartInfo.quantity} món)</Text>
+                    <Text style={{ fontWeight: 'bold', fontSize: 18, color: APP_COLOR.ORANGE }}>{currencyFormatter(cartInfo.sum)}</Text>
+                </View>
             </ScrollView>
-            <View style={{ padding: 10 }}>
-                <Text style={{ fontWeight: "600", marginBottom: 5 }}>Phương thức thanh toán:</Text>
-                <View style={{ flexDirection: 'row', justifyContent: 'space-around', marginBottom: 10 }}>
-                    <Pressable onPress={() => setPaymentMethod('cash')} style={{
-                        paddingHorizontal: 15,
-                        paddingVertical: 10,
-                        backgroundColor: paymentMethod === 'cash' ? APP_COLOR.ORANGE : 'white',
-                        borderRadius: 3,
-                        borderColor: APP_COLOR.ORANGE,
-                        borderWidth: 1,
-                        marginRight: 5,
-                    }}>
-                        <Text style={{ textAlign: 'center', color: paymentMethod === 'cash' ? 'white' : APP_COLOR.ORANGE }}>
-                            Tiền mặt
-                        </Text>
-                    </Pressable>
-                    <Pressable onPress={() => setPaymentMethod('paypal')} style={{
-                        paddingHorizontal: 15,
-                        paddingVertical: 10,
-                        backgroundColor: paymentMethod === 'paypal' ? APP_COLOR.ORANGE : 'white',
-                        borderRadius: 3,
-                        borderColor: APP_COLOR.ORANGE,
-                        borderWidth: 1,
-                    }}>
-                        <Text style={{ textAlign: 'center', color: paymentMethod === 'paypal' ? 'white' : APP_COLOR.ORANGE }}>
-                            Ví PayPal
-                        </Text>
-                    </Pressable>
+
+            <View style={{ padding: 10, borderTopWidth: 10, borderColor: '#f5f5f5' }}>
+                <Text style={{ marginBottom: 10, fontWeight: '600' }}>Thanh toán:</Text>
+                <View style={{ flexDirection: 'row', gap: 10 }}>
+                    {['cash', 'paypal'].map((m) => (
+                        <Pressable key={m} onPress={() => setPaymentMethod(m as any)}
+                            style={{
+                                flex: 1, padding: 10, borderWidth: 1, borderRadius: 5,
+                                borderColor: APP_COLOR.ORANGE, backgroundColor: paymentMethod === m ? APP_COLOR.ORANGE : 'white'
+                            }}>
+                            <Text style={{ textAlign: 'center', color: paymentMethod === m ? 'white' : APP_COLOR.ORANGE, fontWeight: 'bold' }}>
+                                {m === 'cash' ? 'Tiền mặt' : 'PayPal'}
+                            </Text>
+                        </Pressable>
+                    ))}
                 </View>
             </View>
-            <View style={{
-                gap: 20,
-                marginBottom: 15,
-                padding: 10
-            }}>
-                <Pressable
-                    onPress={handlePlaceOrder}
-                    style={({ pressed }) => ({
-                        opacity: pressed === true ? 0.5 : 1,
-                        padding: 10,
-                        backgroundColor: APP_COLOR.ORANGE,
-                        borderRadius: 3
-                    })}
-                >
-                    <Text style={{
-                        color: "white",
-                        textAlign: "center"
-                    }}>
-                        Đặt đơn - {currencyFormatter(cart && bookstore && cart?.[bookstore._id] && cart?.[bookstore._id].sum)}
+
+            <View style={{ padding: 10 }}>
+                <Pressable onPress={handlePlaceOrder} disabled={isSubmitting}
+                    style={{ padding: 15, backgroundColor: isSubmitting ? 'gray' : APP_COLOR.ORANGE, borderRadius: 5 }}>
+                    <Text style={{ color: 'white', textAlign: 'center', fontWeight: 'bold' }}>
+                        {isSubmitting ? 'Đang xử lý...' : `Đặt đơn - ${currencyFormatter(cartInfo.sum)}`}
                     </Text>
                 </Pressable>
             </View>
         </View>
     );
 };
-
 export default PlaceOrderPage;

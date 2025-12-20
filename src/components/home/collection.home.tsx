@@ -2,7 +2,7 @@ import { Dimensions, FlatList, Image, Platform, Pressable, StyleSheet, Text, Vie
 import demo from "@/assets/demo.jpg";
 import { APP_COLOR } from "@/utils/constant";
 import React, { useEffect, useState } from "react";
-import { getTopBookstoreAPI } from "@/utils/api";
+import { getTopBookstoreAPI } from "@/api/bookstore";
 import { router } from "expo-router";
 import ContentLoader, { Rect } from 'react-content-loader/native';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
@@ -101,7 +101,7 @@ const CollectionHome = (props: IProps) => {
         ? process.env.EXPO_PUBLIC_ANDROID_API_URL
         : process.env.EXPO_PUBLIC_IOS_API_URL;
 
-    const baseImage = `${backend}/images/restaurant`;
+    const baseImage = `${backend}/images`;
     console.log(">>Base image URL:", baseImage);
     console.log(">>Backend URL:", backend);
 
@@ -130,8 +130,8 @@ const CollectionHome = (props: IProps) => {
                             return (
                                 <Pressable onPress={() => router.navigate({ pathname: "/product/[id]", params: { id: item._id } })}>
                                     <View style={styles.bookstoreCard}>
-                                        <Image 
-                                            style={styles.bookstoreImage} 
+                                        <Image
+                                            style={styles.bookstoreImage}
                                             source={{ uri: imageUri }}
                                             onError={(error) => {
                                                 console.error(">>Image load error:", imageUri, error.nativeEvent.error);

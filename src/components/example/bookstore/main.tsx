@@ -156,7 +156,7 @@ const RMain = () => {
 
             <View style={styles.header}>
                 <Image
-                    source={{ uri: `${getURLBaseBackend()}/images/restaurant/${bookstore?.image}` }}
+                    source={{ uri: `${getURLBaseBackend()}/images/${bookstore?.image}` }}
                     style={styles.headerImage}
                 />
             </View>

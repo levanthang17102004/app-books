@@ -2,7 +2,7 @@
 import ShareButton from "@/components/button/share.button";
 import SocialButton from "@/components/button/social.button";
 import ShareInput from "@/components/input/share.input";
-import { loginAPI } from "@/utils/api";
+import { loginAPI } from "@/api/auth";
 import { APP_COLOR } from "@/utils/constant";
 import { Link, router } from "expo-router";
 import { useState } from "react";

@@ -6,7 +6,9 @@ import { APP_COLOR } from '@/utils/constant';
 import StickyHeader from './sticky.header';
 import { useRef, useState } from 'react';
 import React from 'react';
-import { currencyFormatter, getURLBaseBackend, processDataBookstoreMenu } from '@/utils/api';
+import { currencyFormatter } from '@/utils/format';
+import { getURLBaseBackend, processDataBookstoreMenu } from '@/utils/helper';
+
 import AntDesign from '@expo/vector-icons/AntDesign';
 import ItemQuantity from './order/item.quantity';
 import StickyFooter from './order/sticky.footer';
@@ -156,7 +158,7 @@ const RMain = () => {
 
             <View style={styles.header}>
                 <Image
-                    source={{ uri: `${getURLBaseBackend()}/images/restaurant/${bookstore?.image}` }}
+                    source={{ uri: `${getURLBaseBackend()}/images/${bookstore?.image}` }}
                     style={styles.headerImage}
                 />
             </View>

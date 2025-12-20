@@ -1,6 +1,6 @@
 import ShareInput from "@/components/input/share.input";
 import { useCurrentApp } from "@/context/app.context";
-import { updateUserAPI } from "@/utils/api";
+import { updateUserAPI } from "@/api/user";
 import { APP_COLOR } from "@/utils/constant";
 import { UpdateUserSchema } from "@/utils/validate.schema";
 import { Formik } from "formik";

@@ -3,7 +3,7 @@ import { Link, Redirect, router } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useEffect, useState } from "react";
 import React from "react";
-import { getAccountAPI, printAsyncStorage } from "@/utils/api";
+import { getAccountAPI } from "@/api/auth";
 import { useCurrentApp } from "@/context/app.context";
 
 import * as SplashScreen from 'expo-splash-screen';

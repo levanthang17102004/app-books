@@ -1,4 +1,5 @@
-import { getBookstoreByNameAPI, getURLBaseBackend } from "@/utils/api";
+import { getURLBaseBackend } from "@/utils/helper";
+import { getBookstoreByNameAPI } from "@/api/bookstore";
 import { APP_COLOR } from "@/utils/constant";
 import debounce from "debounce";
 import { useState } from "react";
@@ -155,7 +156,7 @@ const SearchPage = () => {
                                     }}
                                 >
                                     <Image
-                                        source={{ uri: `${getURLBaseBackend()}/images/restaurant/${item.image}` }}
+                                        source={{ uri: `${getURLBaseBackend()}/images/${item.image}` }}
                                         style={{ height: 50, width: 50 }}
                                     />
                                     <Text>{item.name}</Text>

@@ -1,4 +1,4 @@
-import { getNotificationsAPI } from "@/utils/api"; // Assume this function is defined  
+import { getNotificationsAPI } from "@/api/user"; // Assume this function is defined  
 import { APP_COLOR } from "@/utils/constant";
 import { useEffect, useState } from "react";
 import { View, Text, SafeAreaView, ScrollView, StyleSheet } from "react-native";

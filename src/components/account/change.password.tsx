@@ -1,5 +1,5 @@
 import { useCurrentApp } from "@/context/app.context";
-import { changePasswordAPI } from "@/utils/api"; // Assume this function is defined  
+import { changePasswordAPI } from "@/api/user"; // Assume this function is defined  
 import { APP_COLOR } from "@/utils/constant";
 import { ChangePasswordSchema } from "@/utils/validate.schema"; // Assume this schema is defined  
 import { Formik } from "formik";

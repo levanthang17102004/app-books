@@ -1,7 +1,7 @@
 import { APP_COLOR } from "@/utils/constant";
 import { Pressable, Text, View, StyleSheet } from "react-native";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { currencyFormatter } from "@/utils/api";
+import { currencyFormatter } from "@/utils/format";
 import { useCurrentApp } from "@/context/app.context";
 import React from "react";
 import { router } from "expo-router";

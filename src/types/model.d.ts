@@ -1,5 +1,5 @@
 
-export {};
+export { };
 
 declare global {
     interface IBackendRes<T> {
@@ -7,12 +7,13 @@ declare global {
         message: string | string[];
         statusCode: number | string;
         data?: T;
-}
+        duration?: string;
+    }
     interface IRegister {
         id: string
     }
 
-    interface IUserLogin{
+    interface IUserLogin {
         user: {
             id: string,
             email: string,
@@ -29,7 +30,7 @@ declare global {
         _id: string,
         name: string,
         phone: string,
-        address:string,
+        address: string,
         email: string,
         rating: number,
         image: string,
@@ -42,7 +43,7 @@ declare global {
         _id: string,
         name: string,
         phone: string,
-        address:string,
+        address: string,
         email: string,
         rating: number,
         image: string,
@@ -70,9 +71,9 @@ declare global {
         basePrice: number,
         image: string;
         options: {
-        title: string;
-        description: string;
-        additionalPrice: number;
+            title: string;
+            description: string;
+            additionalPrice: number;
         }[],
         createdAt: Date;
         updatedAt: Date;
@@ -82,16 +83,16 @@ declare global {
         [key: string]: {
             sum: number;
             quantity: number;
-        items: {
-            [key: string]: {
-                quantity: number;
-                data: IBook;
-                extra?: {
-                    [key: string]: number;
+            items: {
+                [key: string]: {
+                    quantity: number;
+                    data: IBook;
+                    extra?: {
+                        [key: string]: number;
+                    }
                 }
-    }
-    }
-    }
+            }
+        }
     }
 
     interface IOrderHistory {
@@ -103,15 +104,15 @@ declare global {
         totalQuantity: number;
         orderTime: Date;
         detail: {
-        image: string;
-        title: string;
-        option: string;
-        price: number;
-        quantity: number;
+            image: string;
+            title: string;
+            option: string;
+            price: number;
+            quantity: number;
         }[]
         createdAt: Date;
         updatedAt: Date;
-        }
+    }
 
     interface INotification {
         _id: string;
@@ -120,13 +121,13 @@ declare global {
         user: string;
         status: string;
         detail: {
-        image: string;
-        title: string;
+            image: string;
+            title: string;
         }[]
         createdAt: Date;
         updatedAt: Date;
-        }
-        
+    }
+
     interface IModelPaginate<T> {
         meta: {
             current: number;
@@ -135,17 +136,19 @@ declare global {
             total: number;
         };
         results: T[];
-        }
+    }
 
 
-        interface ILikeBookstore {
-            _id: string; 
-            bookstore: IBookstore; 
-            user: string; 
-            quantity: number; 
-            createdAt: Date; 
-            updatedAt: Date; 
-        }
-        
+    interface ILikeBookstore {
+        _id: string;
+        bookstore: IBookstore;
+        user: string;
+        quantity: number;
+        createdAt: Date;
+        updatedAt: Date;
+    }
 
+    interface IRegister {
+        id: string
+    }
 }

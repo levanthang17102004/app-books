@@ -1,138 +1,55 @@
-import { filterBookstoreAPI, getBookstoreByNameAPI, getURLBaseBackend } from "@/utils/api";
+import React from "react";
+import { ActivityIndicator, FlatList, SafeAreaView, View } from "react-native";
 import { APP_COLOR } from "@/utils/constant";
-import debounce from "debounce";
-import { useEffect, useState } from "react";
-import {
-    FlatList,
-    Image,
-    Pressable,
-    SafeAreaView,
-    Text,
-    TextInput,
-    View,
-    ActivityIndicator
-} from "react-native";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons';
-import { router } from "expo-router";
-
+import { bookstoreStyles } from "@/styles/bookstore.styles";
+import BookstoreHeader from "@/components/bookstore/BookstoreHeader";
+import BookstoreItem from "@/components/bookstore/BookstoreItem";
+import { useBookstore } from "@/hooks/useBookstore";
 
 const BookstoresPage = () => {
-    const [bookstores, setBookstores] = useState<IBookstore[]>([]);
-    const [searchTerm, setSearchTerm] = useState<string>("");
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const [pageSize, setPageSize] = useState<number>(5);
-    const [loading, setLoading] = useState<boolean>(false);
-
-    useEffect(() => {
-        const fetchInitData = async () => {
-            const res = await filterBookstoreAPI(`current=1&pageSize=${pageSize}`)
-            if (res.data) {
-                setBookstores(res.data.results)
-            }
-        }
-        fetchInitData();
-    }, [])
-    useEffect(() => {
-        const fetchData = async () => {
-            const res = await filterBookstoreAPI(`current=${currentPage}&pageSize=${pageSize}`);
-            if (res.data) {
-                setBookstores([...bookstores, ...res.data.results]);
-            }
-        };
-
-        if (currentPage > 1) {
-            fetchData();
-        }
-    }, [currentPage]);
-
-    const handleSearch = debounce(async (text: string) => {
-
-        setSearchTerm(text);
-        if (!text) return;
-
-        const res = await getBookstoreByNameAPI(text);
-        if (res.data) {
-            setBookstores(res.data.results)
-        }
-    }, 300)
-
-    const handleEndReached = async () => {
-        setCurrentPage(prev => prev + 1);
-    }
+    // Gọi Hook để lấy logic
+    const { bookstores, loading, handleSearch, handleLoadMore } = useBookstore();
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{
-                flexDirection: "row",
-                gap: 5,
-                alignItems: "center",
-                padding: 10
-            }}>
-                <MaterialIcons
-                    onPress={() => router.back()}
-                    name="arrow-back"
-                    size={24}
-                    color={APP_COLOR.ORANGE}
+        <SafeAreaView style={bookstoreStyles.safeArea}>
+            {/* Header Component */}
+            <BookstoreHeader onSearch={handleSearch} />
+
+            <View style={bookstoreStyles.listContainer}>
+                <FlatList
+                    data={bookstores}
+                    keyExtractor={(item) => item._id}
+                    renderItem={({ item }) => <BookstoreItem item={item} />}
+
+                    // Logic load more
+                    onEndReachedThreshold={0.5}
+                    onEndReached={handleLoadMore}
+
+                    // Hiển thị loading ở cuối danh sách khi cuộn
+                    ListFooterComponent={
+                        loading && bookstores.length > 0 ? (
+                            <ActivityIndicator
+                                size="small"
+                                color={APP_COLOR.ORANGE}
+                                style={bookstoreStyles.loadingContainer}
+                            />
+                        ) : null
+                    }
+
+                    // Hiển thị loading giữa màn hình khi mới vào chưa có dữ liệu
+                    ListEmptyComponent={
+                        loading ? (
+                            <ActivityIndicator
+                                size="large"
+                                color={APP_COLOR.ORANGE}
+                                style={{ marginTop: 50 }}
+                            />
+                        ) : null
+                    }
                 />
-                <TextInput
-                    placeholder="Tìm kiếm nhà sách..."
-                    onChangeText={(text: string) => handleSearch(text)}
-                    style={{
-                        flex: 1,
-                        backgroundColor: "#f0f0f0", // Màu nền  
-                        paddingVertical: 8, // Giảm khoảng cách theo chiều dọc  
-                        paddingHorizontal: 10, // Giảm khoảng cách bên trái và bên phải  
-                        borderRadius: 5, // Bo tròn  
-                        fontSize: 16, // Giảm kích thước font chữ  
-                        borderWidth: 1, // Đường viền  
-                        borderColor: "#ccd0d5", // Màu viền  
-                        elevation: 2, // Thêm hiệu ứng bóng đổ 
-                    }}
-                />
-            </View>
-            <View style={{ flex: 1 }}>
-                {loading ? ( // Hiển thị spinner khi đang tải  
-                    <ActivityIndicator size="large" color={APP_COLOR.ORANGE} style={{ marginTop: 20 }} />
-                ) : (
-                    <FlatList
-                        onEndReachedThreshold={0.5}
-                        onEndReached={handleEndReached}
-                        data={bookstores}
-                        keyExtractor={(item) => item._id}
-                        renderItem={({ item }) => (
-                            <Pressable
-                                onPress={() => router.push({
-                                    pathname: "/product/[id]",
-                                    params: { id: item._id }
-                                })}
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    padding: 10,
-                                    gap: 10,
-                                    borderBottomColor: "#eee",
-                                    borderBottomWidth: 1,
-                                }}
-                            >
-                                <Image
-                                    source={{ uri: `${getURLBaseBackend()}/images/restaurant/${item.image}` }}
-                                    style={{ height: 100, width: 100, borderRadius: 10 }}
-                                />
-                                <Text style={{
-                                    fontSize: 16,
-                                    fontWeight: 'bold',
-                                    flex: 1,
-                                    marginLeft: 10
-                                }}>{item.name}</Text>
-                            </Pressable>
-                        )}
-                    />
-                )}
             </View>
         </SafeAreaView>
     );
+};
 
-}
-
-export default BookstoresPage
-
+export default BookstoresPage;

@@ -6,7 +6,7 @@ import Animated from "react-native-reanimated";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import React, { useEffect, useState } from "react";
 import { useCurrentApp } from "@/context/app.context";
-import { likeBookstoreAPI } from "@/utils/api";
+import { likeBookstoreAPI } from "@/api/user";
 import Toast from "react-native-root-toast";
 
 const AnimatedMaterialIcons = Animated.createAnimatedComponent(MaterialIcons);

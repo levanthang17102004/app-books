@@ -1,80 +1,97 @@
 import React from "react";
-import { APP_COLOR } from "@/utils/constant";
 import { Tabs } from "expo-router";
+import { APP_COLOR, TAB_ROUTES } from "@/utils/constant";
+
+// Import Icons
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 import AntDesign from '@expo/vector-icons/AntDesign';
 import Octicons from '@expo/vector-icons/Octicons';
 
-const TabLayout = () => {
-
-  const getIcons = (routeName: string, focused: boolean, size: number) => {
-    if (routeName === "index") {
+// Hàm render icon tách biệt, sử dụng switch-case với Constant
+const renderTabIcon = (routeName: string, focused: boolean, size: number, color: string) => {
+  switch (routeName) {
+    case TAB_ROUTES.HOME:
       return (
         <MaterialCommunityIcons
           name="book-open-page-variant"
           size={size}
-          color={focused ? APP_COLOR.ORANGE : APP_COLOR.GREY}
+          color={color}
         />
       );
-    }
-    if (routeName === "order") {
+    case TAB_ROUTES.ORDER:
       return (
         <MaterialIcons
           name="list-alt"
           size={size}
-          color={focused ? APP_COLOR.ORANGE : APP_COLOR.GREY}
+          color={color}
         />
       );
-    }
-    if (routeName === "favorite") {
-      return (focused ?
+    case TAB_ROUTES.FAVORITE:
+      return (
         <AntDesign
-          name="heart"
+          name={focused ? "heart" : "hearto"}
           size={size}
-          color={APP_COLOR.ORANGE}
-        /> :
-        <AntDesign
-          name="hearto"
-          size={size}
-          color={APP_COLOR.GREY}
+          color={color}
         />
       );
-    }
-    if (routeName === "notification") {
-      return (focused ?
-        <Octicons name="bell-fill" size={size} color={APP_COLOR.ORANGE} /> :
-        <Octicons name="bell" size={size} color={APP_COLOR.GREY} />
+    case TAB_ROUTES.NOTIFICATION:
+      return (
+        <Octicons
+          name={focused ? "bell-fill" : "bell"}
+          size={size}
+          color={color}
+        />
       );
-    }
-    if (routeName === "account") {
-      return (focused ?
-        <MaterialCommunityIcons name="account" size={size} color={APP_COLOR.ORANGE} /> :
-        <MaterialCommunityIcons name="account-outline" size={size} color={APP_COLOR.GREY} />
+    case TAB_ROUTES.ACCOUNT:
+      return (
+        <MaterialCommunityIcons
+          name={focused ? "account" : "account-outline"}
+          size={size}
+          color={color}
+        />
       );
-    }
-
-    return (<>
-    </>)
+    default:
+      return null;
   }
+};
 
+const TabLayout = () => {
   return (
     <Tabs
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          return getIcons(route.name, focused, size);
-        },
         headerShown: false,
         tabBarLabelStyle: { paddingBottom: 3 },
-        tabBarActiveTintColor: APP_COLOR.ORANGE
+        tabBarActiveTintColor: APP_COLOR.ORANGE,
+        tabBarInactiveTintColor: APP_COLOR.GREY,
+
+        // Gọi hàm render icon, truyền color tự động từ Expo Router
+        tabBarIcon: ({ focused, color, size }) => {
+          return renderTabIcon(route.name, focused, size, color);
+        },
       })}
-    // sceneContainerStyle={{ backgroundColor: '#fff' }}
     >
-      <Tabs.Screen name="index" options={{ title: 'Home' }} />
-      <Tabs.Screen name="order" options={{ title: 'Đơn hàng' }} />
-      <Tabs.Screen name="favorite" options={{ title: 'Đã thích' }} />
-      <Tabs.Screen name="notification" options={{ title: 'Thông báo' }} />
-      <Tabs.Screen name="account" options={{ title: 'Tôi' }} />
+      {/* Sử dụng Constant cho prop 'name' */}
+      <Tabs.Screen
+        name={TAB_ROUTES.HOME}
+        options={{ title: 'Home' }}
+      />
+      <Tabs.Screen
+        name={TAB_ROUTES.ORDER}
+        options={{ title: 'Đơn hàng' }}
+      />
+      <Tabs.Screen
+        name={TAB_ROUTES.FAVORITE}
+        options={{ title: 'Đã thích' }}
+      />
+      <Tabs.Screen
+        name={TAB_ROUTES.NOTIFICATION}
+        options={{ title: 'Thông báo' }}
+      />
+      <Tabs.Screen
+        name={TAB_ROUTES.ACCOUNT}
+        options={{ title: 'Tôi' }}
+      />
     </Tabs>
   );
 };
