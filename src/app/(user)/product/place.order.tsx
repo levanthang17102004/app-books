@@ -58,7 +58,7 @@ const PlaceOrderPage = () => {
             <ScrollView style={{ flex: 1, padding: 10 }}>
                 {orderItems.map((item, index) => (
                     <View key={index} style={{ flexDirection: "row", gap: 10, paddingVertical: 10, borderBottomWidth: 1, borderColor: "#eee" }}>
-                        <Image source={{ uri: `${getURLBaseBackend()}/images/menu-item/${item.image}` }} style={{ width: 50, height: 50, borderRadius: 5 }} />
+                        <Image source={{ uri: `${getURLBaseBackend()}/images/${item.image}` }} style={{ width: 50, height: 50, borderRadius: 5 }} />
                         <Text style={{ fontWeight: "bold", color: APP_COLOR.ORANGE, alignSelf: 'center' }}>{item.quantity}x</Text>
                         <View style={{ flex: 1, justifyContent: 'center' }}>
                             <Text style={{ fontWeight: '500' }}>{item.title}</Text>

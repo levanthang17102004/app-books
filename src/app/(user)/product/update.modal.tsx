@@ -48,7 +48,7 @@ const UpdateModalPage = () => {
         if (bookstore && menuItem) {
             updateCartQuantity(bookstore._id, menuItem._id, item.option, item.price, change);
 
-            // Logic tự động đóng modal nếu hết món (có thể tùy chỉnh)
+            // Logic tự động đóng modal nếu hết sách (có thể tùy chỉnh)
             if (updatedItems.length === 1 && item.quantity + change <= 0) {
                 setTimeout(() => router.back(), 50);
             }
@@ -69,7 +69,7 @@ const UpdateModalPage = () => {
                 <ScrollView style={{ flex: 1 }}>
                     {updatedItems.length > 0 ? updatedItems.map((item, index) => (
                         <View key={index} style={{ flexDirection: 'row', padding: 15, borderBottomWidth: 1, borderColor: '#eee', alignItems: 'center' }}>
-                            <Image source={{ uri: `${getURLBaseBackend()}/images/menu-item/${item.image}` }} style={{ width: 60, height: 60, borderRadius: 8, marginRight: 15 }} />
+                            <Image source={{ uri: `${getURLBaseBackend()}/images/${item.image}` }} style={{ width: 60, height: 60, borderRadius: 8, marginRight: 15 }} />
                             <View style={{ flex: 1 }}>
                                 <Text style={{ fontWeight: 'bold' }}>{item.title}</Text>
                                 <Text style={{ color: 'gray', fontSize: 12 }}>{item.option}</Text>

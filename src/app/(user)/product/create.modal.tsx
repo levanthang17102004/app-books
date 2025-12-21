@@ -50,7 +50,7 @@ const CreateModalPage = () => {
                 {/* Header */}
                 <View style={{ borderBottomColor: "#eee", borderBottomWidth: 1, flexDirection: "row", padding: 10, alignItems: "center" }}>
                     <View style={{ flex: 1 }}>
-                        <Text style={{ textAlign: "center", fontWeight: "600", fontSize: 16 }}>Thêm món mới</Text>
+                        <Text style={{ textAlign: "center", fontWeight: "600", fontSize: 16 }}>Thêm sách mới</Text>
                     </View>
                     <AntDesign onPress={() => router.back()} name="close" size={24} color="grey" />
                 </View>
